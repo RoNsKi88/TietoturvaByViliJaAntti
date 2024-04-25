@@ -30,25 +30,26 @@ import socket
 import ssl
 import threading
 
-# localhost = 127.0.0.1
-
-def run_server(certfile=None, keyfile=None, hostname='localhost', port=65432):
+localhost = "127.0.0.1"
+port = 65432
+def run_server(certfile=None, keyfile=None, hostname=localhost, port=port):
     context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     context.load_cert_chain(certfile=certfile,keyfile=keyfile)
 
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        sock.bind((hostname, port))
-        sock.listen(5)
-        with context.wrap_socket(sock, server_side=True) as ssock:
-            print(f'Server listening on {hostname}:{port}')
-            conn, addr = ssock.accept()
-            print(f'Connected by {addr}')
-            while True:
-                data = conn.recv(1024)
-                if not data:
-                    break
-                print(f'Message from client: {data.decode()}')
-                conn.sendall(data)
-while True:
-    run_server("cert.pem", "key.pem")
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind((hostname, port))
+    sock.listen(5)
+    ssock = context.wrap_socket(sock, server_side=True)
+    print(f'Secure server listening on {hostname}:{port}')
+    conn, addr = ssock.accept()
+    print(f'Connected by {addr}')
+    
+
+    data = conn.recv(1024)
+
+    print(data)
+    print(f'Message from client: {data.decode()}')
+    conn.sendall(data)
+
+run_server("cert.pem", "key.pem")
 

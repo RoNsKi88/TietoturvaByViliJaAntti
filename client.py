@@ -43,7 +43,7 @@ def run_client(server_hostname='localhost', port=65432, cafile='cert.pem'):
 
     with socket.create_connection((server_hostname, port)) as sock:
         with context.wrap_socket(sock, server_hostname=server_hostname) as ssock:
-            ssock.sendall()
+            ssock.sendall(b"secure connection here")
             print(f'Message from server: {ssock.recv(1024).decode()}')
 
 run_client()
