@@ -35,15 +35,16 @@ import ssl
 from cryptography.fernet import Fernet
 key: bytes = Fernet.generate_key()
 
-# localhost = 127.0.0.1
+localhost = "127.0.0.1"
+port = 65432
 
-def run_client(server_hostname='localhost', port=65432, cafile='cert.pem'):
+def run_client(server_hostname=localhost, port=port, cafile='server.crt'):
     context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=cafile)
     context.check_hostname = False  # Since we're using IP addresses or localhost
 
-    with socket.create_connection((server_hostname, port)) as sock:
-        with context.wrap_socket(sock, server_hostname=server_hostname) as ssock:
-            ssock.sendall(b"secure connection here")
-            print(f'Message from server: {ssock.recv(1024).decode()}')
+    sock = socket.create_connection((server_hostname, port))
+    ssock = context.wrap_socket(sock, server_hostname=server_hostname)
+    ssock.sendall(b"secure connection here")
+    print(f'Message from server: {ssock.recv(1024).decode()}')
 
 run_client()

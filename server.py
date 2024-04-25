@@ -43,11 +43,7 @@ def run_server(certfile=None, keyfile=None, hostname=localhost, port=port):
     print(f'Secure server listening on {hostname}:{port}')
     conn, addr = ssock.accept()
     print(f'Connected by {addr}')
-    
-
     data = conn.recv(1024)
-
-    print(data)
     print(f'Message from client: {data.decode()}')
     conn.sendall(data)
 

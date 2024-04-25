@@ -1,9 +1,9 @@
 import socket
 
-def main():
-    host = "127.0.0.1"  # The server's hostname or IP address
-    port = 65432      # The port used by the server
+host = "127.0.0.1"  # The server's hostname or IP address
+port = 65432      # The port used by the server
 
+def main():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     s.connect((host, port))
