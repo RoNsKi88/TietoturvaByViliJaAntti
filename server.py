@@ -3,27 +3,27 @@ import ssl
 
 localhost = "127.0.0.1"
 port = 65432
-def run_server(certfile=None, keyfile=None, hostname=localhost, port=port):
+certFileName = "cert.pem"
+keyFileName = "key.pem"
+def run_server():
     context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    context.load_cert_chain(certfile=certfile,keyfile=keyfile)
+    context.load_cert_chain(certfile=certFileName,keyfile=keyFileName)
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind((hostname, port))
+    sock.bind((localhost, port))
     sock.listen(5)
     ssock = context.wrap_socket(sock, server_side=True)
-    print(f'Secure server listening on {hostname}:{port}')
+    print(f'Secure server listening on {localhost}:{port}')
     conn, addr = ssock.accept()
-    print("chipher",conn.cipher())
-    print("connection data",conn)
     print(f'Connected by {addr}')
     data = conn.recv(2048)
     receivedMessage = data.decode()
     
     print(f'Message from client: {receivedMessage}')
-    receivedMessage = (receivedMessage + " this is added in server.").encode()
+    receivedMessage = ("Server: " + receivedMessage).encode()
     conn.sendall(receivedMessage)
 
-run_server("cert.pem", "key.pem")
+run_server()
 
 # RSA keyfile 2048 bits
 # openssl genpkey -algorithm RSA -out key.pem -pkeyopt rsa_keygen_bits:2048

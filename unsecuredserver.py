@@ -6,7 +6,7 @@ def main():
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind((host,port))
-    sock.listen()
+    sock.listen(5)
     print(f"Unsecure server listening {host}:{port}")
     conn,addr = sock.accept()
 
@@ -16,8 +16,9 @@ def main():
             data = conn.recv(1024)  # Receive data from the client
             if not data:
                 break
-            print(f"Received from {addr}: {data.decode()}")
-            conn.sendall(data)  # Send data back to the client (echo)
-
+            message = data.decode()
+            print(f"Received from {addr}: {message}")
+            data = ("Server: " + message).encode()
+            conn.sendall(data)      # Send data back to the client (echo)
 
 main()
